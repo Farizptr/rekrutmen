@@ -20,6 +20,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'gender',
+        'role',
         'password',
     ];
 
@@ -42,4 +44,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is a regular user.
+     *
+     * @return bool
+     */
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+    
+    /**
+     * Get the job applications for the user.
+     */
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
 }
