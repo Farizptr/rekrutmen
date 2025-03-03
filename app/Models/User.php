@@ -67,6 +67,8 @@ class User extends Authenticatable
     
     /**
      * Get the job applications for the user.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\JobApplication>
      */
     public function jobApplications()
     {
