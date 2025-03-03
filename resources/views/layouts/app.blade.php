@@ -37,10 +37,9 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
         }
         .card:hover {
-            transform: translateY(-5px);
+            /* Removing the transform effect that causes the jiggle */
         }
         .btn-primary {
             background-color: #4361ee;

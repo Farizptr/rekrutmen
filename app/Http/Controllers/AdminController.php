@@ -49,7 +49,24 @@ class AdminController extends Controller
      */
     public function rekrutmen()
     {
-        return view('admin.rekrutmen');
+        // Get all job applications with their related user and job information
+        $applications = JobApplication::with(['user', 'job'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        // Count applications by status
+        $totalApplications = JobApplication::count();
+        $shortlistedCount = JobApplication::where('status', 'shortlisted')->count();
+        $interviewCount = JobApplication::where('status', 'interview')->count();
+        $hiredCount = JobApplication::where('status', 'hired')->count();
+        
+        return view('admin.rekrutmen', compact(
+            'applications', 
+            'totalApplications', 
+            'shortlistedCount', 
+            'interviewCount', 
+            'hiredCount'
+        ));
     }
     
     /**
@@ -176,5 +193,39 @@ class AdminController extends Controller
         $statusText = $job->status === 'active' ? 'activated' : 'deactivated';
         
         return redirect()->route('admin.lowongan')->with('success', "Job {$statusText} successfully!");
+    }
+    
+    /**
+     * Show the details of a specific job application.
+     *
+     * @param  \App\Models\JobApplication  $application
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function applicationDetails(JobApplication $application)
+    {
+        // Load the related user and job data
+        $application->load(['user', 'job']);
+        
+        return view('admin.applications.details', compact('application'));
+    }
+    
+    /**
+     * Update the status of a job application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\JobApplication  $application
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApplicationStatus(Request $request, JobApplication $application)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,shortlisted,interview,hired,rejected',
+        ]);
+        
+        $application->status = $request->status;
+        $application->save();
+        
+        return redirect()->route('admin.application.details', $application)
+            ->with('success', 'Application status updated successfully!');
     }
 }

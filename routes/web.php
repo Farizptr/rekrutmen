@@ -48,7 +48,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/lowongan/{job}/toggle-status', [AdminController::class, 'toggleJobStatus'])->name('admin.lowongan.toggle-status');
     
     // Job application routes
-    Route::put('/rekrutmen/{application}/update-status', [AdminController::class, 'updateApplicationStatus'])->name('admin.rekrutmen.update-status');
+    Route::get('/applications/{application}', [AdminController::class, 'applicationDetails'])->name('admin.application.details');
+    Route::patch('/applications/{application}/status', [AdminController::class, 'updateApplicationStatus'])->name('admin.application.status');
 });
 
 // User Routes (Protected)
